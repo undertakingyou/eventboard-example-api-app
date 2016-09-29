@@ -165,6 +165,8 @@ def get_and_end(room_id):
             r = requests.patch(URLS['edit'].format(event['id']),
                                json=data, headers=headers)
             return r.status_code
+    else:
+        return False
 
 
 # The following are the routes so that we can make HTTP requests
