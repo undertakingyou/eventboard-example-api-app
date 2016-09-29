@@ -28,7 +28,7 @@ URLS = {
     'get': 'https://eventboard.io/api/v4/calendars/reservations/?room_id[]={}',
     'create':
         'https://eventboard.io/api/v4/calendars/reservations/?room_id={}',
-    'edit': 'https://eventboard.io/api/v4/calendars/reservations/{}'
+    'edit': 'https://eventboard.io/api/v4/calendars/reservations/{}/'
 }
 
 
@@ -158,13 +158,13 @@ def get_and_end(room_id):
             # meets the requirements of now. TODO parse all events and end
             # everything as needed.
             data = {
-                "reservations": {
+                "reservation": {
                     "ends_at": now
                 }
             }
             r = requests.patch(URLS['edit'].format(event['id']),
                                json=data, headers=headers)
-            return r.json()
+            return r.status_code
 
 
 # The following are the routes so that we can make HTTP requests
@@ -182,5 +182,8 @@ def occupied():
 @app.route('/empty', methods=['GET'])
 def empty():
     room_id = request.args.get('room_id')
-    get_and_end(room_id)
-    return 'Request received'
+    response = get_and_end(room_id)
+    if response == 204:
+        return 'Request received'
+    else:
+        return 'There was an error or no current reservation'
