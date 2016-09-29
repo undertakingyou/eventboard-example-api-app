@@ -91,7 +91,7 @@ def get_access_token():
         # If we are here we need to update the access token
         data = {'client_id': creds['client_id'],
             'grant_type': 'refresh_token',
-            'client_secrect': creds['client_secrect'],
+            'client_secret': creds['client_secret'],
             'refresh_token': creds['refresh_token']}
         r = requests.post('https://eventboard.io/oauth/token/', data=data)
         if r.status_code == 200:
