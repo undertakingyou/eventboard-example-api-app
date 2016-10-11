@@ -25,10 +25,10 @@ ADHOC_EVENT_TITLE = "Quick Adhoc Reservation"  # String of meeting name
 ADHOC_MEETING_DURATION = 1800  # Time in seconds of the meeting
 # Do not change variables below here ##########################################
 URLS = {
-    'get': 'https://eventboard.io/api/v4/calendars/reservations/?room_id[]={}',
+    'get': 'https://app.teem.com/api/v4/calendars/reservations/?room_id[]={}',
     'create':
-        'https://eventboard.io/api/v4/calendars/reservations/?room_id={}',
-    'edit': 'https://eventboard.io/api/v4/calendars/reservations/{}/'
+        'https://app.teem.com/api/v4/calendars/reservations/?room_id={}',
+    'edit': 'https://app.teem.com/api/v4/calendars/reservations/{}/'
 }
 
 
@@ -94,7 +94,7 @@ def get_access_token():
             'grant_type': 'refresh_token',
             'client_secret': creds['client_secret'],
             'refresh_token': creds['refresh_token']}
-        r = requests.post('https://eventboard.io/oauth/token/', data=data)
+        r = requests.post('https://app.teem.com/oauth/token/', data=data)
         if r.status_code == 200:
             r_dict = r.json()
             db.execute('UPDATE credentials SET refresh_token=?,'
@@ -175,8 +175,11 @@ def occupied():
     room_id = request.args.get('room_id')
     if is_available(room_id):
         response = create_calendar_event(room_id)
-        return 'Request received, room booked with ID {}'\
-            .format(response['reservation']['id'])
+        if 'reservation' in response:
+            return 'Request received, room booked with ID {}'\
+                .format(response['reservation']['id'])
+        else:
+            return "There was an error processing your request"
     else:
         return 'Request received, room already booked.'
 
