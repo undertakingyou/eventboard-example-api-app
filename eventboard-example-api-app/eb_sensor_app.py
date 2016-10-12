@@ -170,7 +170,7 @@ def get_and_end(room_id):
 
 
 # The following are the routes so that we can make HTTP requests
-@app.route('/occupied', methods=['GET'])
+@app.route('/occupied', methods=['GET', 'POST'])
 def occupied():
     room_id = request.args.get('room_id')
     if is_available(room_id):
@@ -184,7 +184,7 @@ def occupied():
         return 'Request received, room already booked.'
 
 
-@app.route('/empty', methods=['GET'])
+@app.route('/empty', methods=['GET', 'POST'])
 def empty():
     room_id = request.args.get('room_id')
     response = get_and_end(room_id)
